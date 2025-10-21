@@ -390,7 +390,7 @@ export default function LandingPage() {
                 </div>
               </div>
               <div className="mx-auto grid max-w-5xl items-center gap-6 py-12 lg:grid-cols-2 lg:gap-12">
-                <div className="mx-auto grid aspect-square w-full max-w-[400px] grid-cols-2 gap-2 overflow-hidden rounded-xl">
+                <div className="mx-auto grid aspect-square w-full max-w-[400px] grid-cols-2 gap-2 overflow-hidden rounded-xl relative">
                   <Image
                     src="/fire-damage-before.jpg"
                     width={200}
@@ -409,6 +409,7 @@ export default function LandingPage() {
                     loading="eager"
                     priority
                   />
+                  <div className="absolute inset-0 bg-black opacity-50"></div>
                   <div className="flex items-center justify-center bg-muted/50 text-sm font-medium">Before</div>
                   <div className="flex items-center justify-center bg-primary/10 text-sm font-medium text-primary">
                     After
