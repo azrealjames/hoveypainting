@@ -392,19 +392,19 @@ export default function LandingPage() {
               <div className="mx-auto grid max-w-5xl items-center gap-6 py-12 lg:grid-cols-2 lg:gap-12">
                 <div className="mx-auto grid aspect-square w-full max-w-[400px] grid-cols-2 gap-2 overflow-hidden rounded-xl">
                   <Image
-                    src="/blank-canvas-prep.png"
+                    src="/fire-damage-before.jpg"
                     width={200}
                     height={200}
-                    alt="Before painting"
+                    alt="Fire damaged carport before restoration"
                     className="h-full w-full object-cover"
                     loading="eager"
                     priority
                   />
                   <Image
-                    src="/colorful-studio-mess.png"
+                    src="/fire-damage-after.jpg"
                     width={200}
                     height={200}
-                    alt="After painting"
+                    alt="Restored carport after painting and repair"
                     className="h-full w-full object-cover"
                     loading="eager"
                     priority
@@ -615,6 +615,36 @@ export default function LandingPage() {
                     loading="lazy"
                     sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
                   />
+                </div>
+              </div>
+
+              <div className="mt-8 space-y-8">
+                <h3 className="text-2xl font-bold">Restoration Projects</h3>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Image
+                      src="/fire-damage-before.jpg"
+                      width={400}
+                      height={300}
+                      alt="Fire damaged carport before restoration"
+                      className="aspect-video rounded-lg object-cover"
+                      loading="lazy"
+                      sizes="(max-width: 640px) 100vw, 50vw"
+                    />
+                    <p className="text-sm text-muted-foreground text-center">Before: Fire Damage</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Image
+                      src="/fire-damage-after.jpg"
+                      width={400}
+                      height={300}
+                      alt="Fully restored carport with fresh paint"
+                      className="aspect-video rounded-lg object-cover"
+                      loading="lazy"
+                      sizes="(max-width: 640px) 100vw, 50vw"
+                    />
+                    <p className="text-sm text-muted-foreground text-center">After: Complete Restoration</p>
+                  </div>
                 </div>
               </div>
             </div>
