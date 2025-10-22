@@ -15,6 +15,19 @@ const nextConfig = {
     ],
     unoptimized: true,
   },
+  // Ensure nodemailer works in serverless environment
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        dns: false,
+      }
+    }
+    return config
+  },
 }
 
 export default nextConfig
