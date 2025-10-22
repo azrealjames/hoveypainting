@@ -7,7 +7,17 @@ import { Textarea } from "@/components/ui/textarea"
 import { Phone, Mail, Facebook, CheckCircle, PaintBucket, Home, Building2, Paintbrush, Copy, Check } from "lucide-react"
 import { processFormSubmission } from "./actions"
 import { useActionState } from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { BeforeAfterSlider } from "@/components/before-after-slider"
+import { Badge } from "@/components/ui/badge"
 
 // JSON-LD Structured Data
 const jsonLd = {
@@ -153,6 +163,39 @@ export default function LandingPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [emailCopied, setEmailCopied] = useState(false)
   const [mobileEmailCopied, setMobileEmailCopied] = useState(false)
+  const [showStickyButton, setShowStickyButton] = useState(false)
+
+  // Form helper selections
+  const [selectedRooms, setSelectedRooms] = useState<string>("")
+  const [selectedSqFt, setSelectedSqFt] = useState<string>("")
+  const [selectedTimeline, setSelectedTimeline] = useState<string>("")
+  const [paintPeeling, setPaintPeeling] = useState<string>("")
+
+  // Add a scroll function after the state declarations
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      const headerOffset = 64 // Height of sticky header
+      const elementPosition = element.getBoundingClientRect().top
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      })
+    }
+    setIsMobileMenuOpen(false)
+  }
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Show button after scrolling past hero section (about 600px)
+      setShowStickyButton(window.scrollY > 600)
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   const copyEmailToClipboard = (isMobile = false) => {
     navigator.clipboard.writeText("hoveypainting@yahoo.com")
@@ -179,24 +222,27 @@ export default function LandingPage() {
               <span className="text-xl font-bold">Hovey Painting</span>
             </Link>
             <nav className="hidden md:flex gap-6">
-              <Link href="#about" className="text-sm font-medium hover:text-primary">
+              <button onClick={() => scrollToSection("about")} className="text-sm font-medium hover:text-primary">
                 About
-              </Link>
-              <Link href="#services" className="text-sm font-medium hover:text-primary">
+              </button>
+              <button onClick={() => scrollToSection("services")} className="text-sm font-medium hover:text-primary">
                 Services
-              </Link>
-              <Link href="#portfolio" className="text-sm font-medium hover:text-primary">
+              </button>
+              <button onClick={() => scrollToSection("portfolio")} className="text-sm font-medium hover:text-primary">
                 Portfolio
-              </Link>
-              <Link href="#testimonials" className="text-sm font-medium hover:text-primary">
+              </button>
+              <button
+                onClick={() => scrollToSection("testimonials")}
+                className="text-sm font-medium hover:text-primary"
+              >
                 Testimonials
-              </Link>
-              <Link href="#contact" className="text-sm font-medium hover:text-primary">
+              </button>
+              <button onClick={() => scrollToSection("contact")} className="text-sm font-medium hover:text-primary">
                 Contact
-              </Link>
+              </button>
             </nav>
-            <Button asChild className="hidden md:inline-flex">
-              <Link href="#contact">Get a Quote</Link>
+            <Button onClick={() => scrollToSection("quote-form")} className="hidden md:inline-flex">
+              Get a Quote
             </Button>
             <Button
               variant="outline"
@@ -275,48 +321,43 @@ export default function LandingPage() {
                 {/* Mobile Menu Navigation */}
                 <nav className="flex-1 overflow-y-auto p-4">
                   <div className="flex flex-col gap-2">
-                    <Link
-                      href="#about"
-                      className="text-lg font-medium hover:text-primary py-3 px-4 rounded-lg hover:bg-muted transition-colors"
-                      onClick={() => setIsMobileMenuOpen(false)}
+                    <button
+                      onClick={() => scrollToSection("about")}
+                      className="text-lg font-medium hover:text-primary py-3 px-4 rounded-lg hover:bg-muted transition-colors text-left"
                     >
                       About
-                    </Link>
-                    <Link
-                      href="#services"
-                      className="text-lg font-medium hover:text-primary py-3 px-4 rounded-lg hover:bg-muted transition-colors"
-                      onClick={() => setIsMobileMenuOpen(false)}
+                    </button>
+                    <button
+                      onClick={() => scrollToSection("services")}
+                      className="text-lg font-medium hover:text-primary py-3 px-4 rounded-lg hover:bg-muted transition-colors text-left"
                     >
                       Services
-                    </Link>
-                    <Link
-                      href="#portfolio"
-                      className="text-lg font-medium hover:text-primary py-3 px-4 rounded-lg hover:bg-muted transition-colors"
-                      onClick={() => setIsMobileMenuOpen(false)}
+                    </button>
+                    <button
+                      onClick={() => scrollToSection("portfolio")}
+                      className="text-lg font-medium hover:text-primary py-3 px-4 rounded-lg hover:bg-muted transition-colors text-left"
                     >
                       Portfolio
-                    </Link>
-                    <Link
-                      href="#testimonials"
-                      className="text-lg font-medium hover:text-primary py-3 px-4 rounded-lg hover:bg-muted transition-colors"
-                      onClick={() => setIsMobileMenuOpen(false)}
+                    </button>
+                    <button
+                      onClick={() => scrollToSection("testimonials")}
+                      className="text-lg font-medium hover:text-primary py-3 px-4 rounded-lg hover:bg-muted transition-colors text-left"
                     >
                       Testimonials
-                    </Link>
-                    <Link
-                      href="#contact"
-                      className="text-lg font-medium hover:text-primary py-3 px-4 rounded-lg hover:bg-muted transition-colors"
-                      onClick={() => setIsMobileMenuOpen(false)}
+                    </button>
+                    <button
+                      onClick={() => scrollToSection("contact")}
+                      className="text-lg font-medium hover:text-primary py-3 px-4 rounded-lg hover:bg-muted transition-colors text-left"
                     >
                       Contact
-                    </Link>
+                    </button>
                   </div>
                 </nav>
 
                 {/* Mobile Menu Footer */}
                 <div className="p-4 border-t">
-                  <Button asChild className="w-full" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Link href="#contact">Get a Quote</Link>
+                  <Button onClick={() => scrollToSection("quote-form")} className="w-full">
+                    Get a Quote
                   </Button>
 
                   <div className="mt-4 pt-4 border-t">
@@ -365,12 +406,82 @@ export default function LandingPage() {
                   </p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4 mt-8">
-                  <Button asChild size="lg">
-                    <Link href="#contact">Request a Quote</Link>
+                  <Button onClick={() => scrollToSection("quote-form")} size="lg">
+                    Request a Quote
                   </Button>
-                  <Button asChild variant="outline" size="lg">
-                    <Link href="#portfolio">View Our Work</Link>
+                  <Button onClick={() => scrollToSection("portfolio")} variant="outline" size="lg">
+                    View Our Work
                   </Button>
+                </div>
+                <div className="mt-6 text-sm text-muted-foreground">
+                  <p>
+                    Serving Aurora, Denver, Centennial, Parker, Highlands Ranch…{" "}
+                    <Dialog>
+                      <DialogTrigger className="text-primary hover:underline font-medium">
+                        View full service area
+                      </DialogTrigger>
+                      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                        <DialogHeader>
+                          <DialogTitle>Our Service Area</DialogTitle>
+                          <DialogDescription>
+                            Hovey Painting proudly serves the greater Denver metro area and surrounding communities
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-6 py-4">
+                          <div>
+                            <h3 className="font-semibold text-lg mb-3">Denver Metro Area</h3>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+                              <p>• Denver</p>
+                              <p>• Aurora</p>
+                              <p>• Centennial</p>
+                              <p>• Lakewood</p>
+                              <p>• Arvada</p>
+                              <p>• Westminster</p>
+                              <p>• Thornton</p>
+                              <p>• Broomfield</p>
+                              <p>• Commerce City</p>
+                            </div>
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-lg mb-3">South Metro</h3>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+                              <p>• Highlands Ranch</p>
+                              <p>• Littleton</p>
+                              <p>• Englewood</p>
+                              <p>• Parker</p>
+                              <p>• Castle Rock</p>
+                              <p>• Lone Tree</p>
+                              <p>• Greenwood Village</p>
+                              <p>• Ken Caryl</p>
+                              <p>• Roxborough</p>
+                            </div>
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-lg mb-3">Additional Areas</h3>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+                              <p>• Golden</p>
+                              <p>• Morrison</p>
+                              <p>• Evergreen</p>
+                              <p>• Conifer</p>
+                              <p>• Bailey</p>
+                              <p>• Elizabeth</p>
+                              <p>• Franktown</p>
+                              <p>• Sedalia</p>
+                            </div>
+                          </div>
+                          <div className="pt-4 border-t">
+                            <p className="text-sm text-muted-foreground">
+                              Don't see your area listed?{" "}
+                              <a href="#contact" className="text-primary hover:underline font-medium">
+                                Contact us
+                              </a>{" "}
+                              to see if we can service your location. We're always expanding our service area!
+                            </p>
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </p>
                 </div>
               </div>
             </div>
@@ -390,30 +501,13 @@ export default function LandingPage() {
                 </div>
               </div>
               <div className="mx-auto grid max-w-5xl items-center gap-6 py-12 lg:grid-cols-2 lg:gap-12">
-                <div className="mx-auto grid aspect-square w-full max-w-[400px] grid-cols-2 gap-2 overflow-hidden rounded-xl relative">
-                  <Image
-                    src="/fire-damage-before.jpg"
-                    width={200}
-                    height={200}
-                    alt="Fire damaged carport before restoration"
-                    className="h-full w-full object-cover"
-                    loading="eager"
-                    priority
+                <div className="mx-auto w-full max-w-[600px]">
+                  <BeforeAfterSlider
+                    beforeImage="/fire-damage-before.jpg"
+                    afterImage="/fire-damage-after.jpg"
+                    beforeAlt="Fire damaged carport before restoration"
+                    afterAlt="Restored carport after painting and repair"
                   />
-                  <Image
-                    src="/fire-damage-after.jpg"
-                    width={200}
-                    height={200}
-                    alt="Restored carport after painting and repair"
-                    className="h-full w-full object-cover"
-                    loading="eager"
-                    priority
-                  />
-                  <div className="absolute inset-0 bg-black opacity-50"></div>
-                  <div className="flex items-center justify-center bg-muted/50 text-sm font-medium">Before</div>
-                  <div className="flex items-center justify-center bg-primary/10 text-sm font-medium text-primary">
-                    After
-                  </div>
                 </div>
                 <div className="flex flex-col justify-center space-y-4">
                   <ul className="grid gap-6">
@@ -450,6 +544,38 @@ export default function LandingPage() {
             </div>
           </section>
 
+          {/* Trust Badges Strip */}
+          <section className="w-full py-8 border-y bg-background">
+            <div className="container px-4 md:px-6">
+              <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8 lg:gap-12 text-sm md:text-base">
+                <div className="flex items-center gap-2 font-medium">
+                  <CheckCircle className="h-5 w-5 text-primary" />
+                  <span>35+ years</span>
+                </div>
+                <div className="hidden sm:block text-muted-foreground">•</div>
+                <div className="flex items-center gap-2 font-medium">
+                  <CheckCircle className="h-5 w-5 text-primary" />
+                  <span>Insured</span>
+                </div>
+                <div className="hidden sm:block text-muted-foreground">•</div>
+                <div className="flex items-center gap-2 font-medium">
+                  <CheckCircle className="h-5 w-5 text-primary" />
+                  <span>Family-owned</span>
+                </div>
+                <div className="hidden sm:block text-muted-foreground">•</div>
+                <div className="flex items-center gap-2 font-medium">
+                  <CheckCircle className="h-5 w-5 text-primary" />
+                  <span>Free estimates</span>
+                </div>
+                <div className="hidden sm:block text-muted-foreground">•</div>
+                <div className="flex items-center gap-2 font-medium">
+                  <CheckCircle className="h-5 w-5 text-primary" />
+                  <span>Lead-safe practices</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* Services Section */}
           <section id="services" className="w-full py-12 md:py-24 lg:py-32 bg-muted">
             <div className="container px-4 md:px-6">
@@ -462,42 +588,42 @@ export default function LandingPage() {
                 </div>
               </div>
               <div className="mx-auto grid max-w-5xl gap-8 py-12 sm:grid-cols-2 md:gap-12 lg:grid-cols-3">
-                <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm">
+                <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm bg-card">
                   <Home className="h-12 w-12 text-primary" />
                   <h3 className="text-xl font-bold">Residential Interior</h3>
                   <p className="text-sm text-muted-foreground text-center">
                     Transform your living spaces with our expert interior painting services.
                   </p>
                 </div>
-                <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm">
+                <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm bg-card">
                   <Home className="h-12 w-12 text-primary" />
                   <h3 className="text-xl font-bold">Residential Exterior</h3>
                   <p className="text-sm text-muted-foreground text-center">
                     Enhance your home's curb appeal with our durable exterior painting.
                   </p>
                 </div>
-                <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm">
+                <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm bg-card">
                   <Building2 className="h-12 w-12 text-primary" />
                   <h3 className="text-xl font-bold">Commercial Painting</h3>
                   <p className="text-sm text-muted-foreground text-center">
                     Professional painting solutions for offices, retail spaces, and more.
                   </p>
                 </div>
-                <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm">
+                <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm bg-card">
                   <Paintbrush className="h-12 w-12 text-primary" />
                   <h3 className="text-xl font-bold">Cabinet Refinishing</h3>
                   <p className="text-sm text-muted-foreground text-center">
                     Give your cabinets a fresh new look without the cost of replacement.
                   </p>
                 </div>
-                <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm">
+                <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm bg-card">
                   <Paintbrush className="h-12 w-12 text-primary" />
                   <h3 className="text-xl font-bold">Deck & Fence Staining</h3>
                   <p className="text-sm text-muted-foreground text-center">
                     Protect and beautify your outdoor wooden surfaces.
                   </p>
                 </div>
-                <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm">
+                <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm bg-card">
                   <Paintbrush className="h-12 w-12 text-primary" />
                   <h3 className="text-xl font-bold">Color Consultation</h3>
                   <p className="text-sm text-muted-foreground text-center">
@@ -621,31 +747,16 @@ export default function LandingPage() {
 
               <div className="mt-8 space-y-8">
                 <h3 className="text-2xl font-bold">Restoration Projects</h3>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <Image
-                      src="/fire-damage-before.jpg"
-                      width={400}
-                      height={300}
-                      alt="Fire damaged carport before restoration"
-                      className="aspect-video rounded-lg object-cover"
-                      loading="lazy"
-                      sizes="(max-width: 640px) 100vw, 50vw"
-                    />
-                    <p className="text-sm text-muted-foreground text-center">Before: Fire Damage</p>
-                  </div>
-                  <div className="space-y-2">
-                    <Image
-                      src="/fire-damage-after.jpg"
-                      width={400}
-                      height={300}
-                      alt="Fully restored carport with fresh paint"
-                      className="aspect-video rounded-lg object-cover"
-                      loading="lazy"
-                      sizes="(max-width: 640px) 100vw, 50vw"
-                    />
-                    <p className="text-sm text-muted-foreground text-center">After: Complete Restoration</p>
-                  </div>
+                <div className="mx-auto max-w-4xl">
+                  <BeforeAfterSlider
+                    beforeImage="/fire-damage-before.jpg"
+                    afterImage="/fire-damage-after.jpg"
+                    beforeAlt="Fire damaged carport before restoration"
+                    afterAlt="Fully restored carport with fresh paint"
+                  />
+                  <p className="text-sm text-muted-foreground text-center mt-4">
+                    Fire Damage Restoration: Complete carport restoration with professional painting
+                  </p>
                 </div>
               </div>
             </div>
@@ -663,7 +774,7 @@ export default function LandingPage() {
                 </div>
               </div>
               <div className="mx-auto grid max-w-5xl gap-6 py-12 lg:grid-cols-2 lg:gap-12">
-                <div className="flex flex-col justify-between rounded-lg border bg-background p-6 shadow-sm">
+                <div className="flex flex-col justify-between rounded-lg border bg-card p-6 shadow-sm">
                   <div>
                     <div className="flex gap-1 text-yellow-400 mb-4">
                       {[...Array(5)].map((_, i) => (
@@ -692,7 +803,7 @@ export default function LandingPage() {
                   </div>
                   <p className="font-semibold">- Sarah Johnson, Homeowner</p>
                 </div>
-                <div className="flex flex-col justify-between rounded-lg border bg-background p-6 shadow-sm">
+                <div className="flex flex-col justify-between rounded-lg border bg-card p-6 shadow-sm">
                   <div>
                     <div className="flex gap-1 text-yellow-400 mb-4">
                       {[...Array(5)].map((_, i) => (
@@ -721,7 +832,7 @@ export default function LandingPage() {
                   </div>
                   <p className="font-semibold">- Michael Roberts, Business Owner</p>
                 </div>
-                <div className="flex flex-col justify-between rounded-lg border bg-background p-6 shadow-sm">
+                <div className="flex flex-col justify-between rounded-lg border bg-card p-6 shadow-sm">
                   <div>
                     <div className="flex gap-1 text-yellow-400 mb-4">
                       {[...Array(5)].map((_, i) => (
@@ -749,7 +860,7 @@ export default function LandingPage() {
                   </div>
                   <p className="font-semibold">- Jennifer and David Miller</p>
                 </div>
-                <div className="flex flex-col justify-between rounded-lg border bg-background p-6 shadow-sm">
+                <div className="flex flex-col justify-between rounded-lg border bg-card p-6 shadow-sm">
                   <div>
                     <div className="flex gap-1 text-yellow-400 mb-4">
                       {[...Array(5)].map((_, i) => (
@@ -792,6 +903,143 @@ export default function LandingPage() {
                   </p>
                 </div>
               </div>
+
+              {/* FAQ Section */}
+              <div className="mx-auto max-w-3xl mb-12">
+                <h3 className="text-2xl font-bold mb-6 text-center">Frequently Asked Questions</h3>
+                <div className="space-y-4">
+                  <details className="group rounded-lg border bg-card p-4 shadow-sm">
+                    <summary className="flex cursor-pointer items-center justify-between font-semibold">
+                      How long does an interior painting project take?
+                      <span className="transition group-open:rotate-180">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                      </span>
+                    </summary>
+                    <p className="mt-3 text-muted-foreground">
+                      Most interior painting projects take 2-5 days depending on the size of the space and number of
+                      rooms. We'll provide a detailed timeline during your free consultation and work efficiently to
+                      minimize disruption to your daily routine.
+                    </p>
+                  </details>
+
+                  <details className="group rounded-lg border bg-card p-4 shadow-sm">
+                    <summary className="flex cursor-pointer items-center justify-between font-semibold">
+                      Do you help with color selection?
+                      <span className="transition group-open:rotate-180">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                      </span>
+                    </summary>
+                    <p className="mt-3 text-muted-foreground">
+                      We offer complimentary color consultation services. With over 35 years of experience, Brad can
+                      help you choose colors that complement your space, lighting, and personal style. We'll bring
+                      samples and provide expert recommendations.
+                    </p>
+                  </details>
+
+                  <details className="group rounded-lg border bg-card p-4 shadow-sm">
+                    <summary className="flex cursor-pointer items-center justify-between font-semibold">
+                      What brand of paint do you use?
+                      <span className="transition group-open:rotate-180">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                      </span>
+                    </summary>
+                    <p className="mt-3 text-muted-foreground">
+                      We use premium-quality paints from trusted brands like Sherwin-Williams and Benjamin Moore. These
+                      professional-grade paints provide superior coverage, durability, and a beautiful finish that lasts
+                      for years. We can accommodate specific brand preferences upon request.
+                    </p>
+                  </details>
+
+                  <details className="group rounded-lg border bg-card p-4 shadow-sm">
+                    <summary className="flex cursor-pointer items-center justify-between font-semibold">
+                      Do you move furniture?
+                      <span className="transition group-open:rotate-180">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                      </span>
+                    </summary>
+                    <p className="mt-3 text-muted-foreground">
+                      Yes, we'll carefully move and cover furniture as needed to protect your belongings. Small to
+                      medium-sized furniture will be moved to the center of the room and covered with protective drop
+                      cloths. We recommend removing valuable or delicate items beforehand for extra safety.
+                    </p>
+                  </details>
+
+                  <details className="group rounded-lg border bg-card p-4 shadow-sm">
+                    <summary className="flex cursor-pointer items-center justify-between font-semibold">
+                      Do you offer a warranty on your work?
+                      <span className="transition group-open:rotate-180">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                      </span>
+                    </summary>
+                    <p className="mt-3 text-muted-foreground">
+                      Yes! We stand behind our work with a satisfaction guarantee. If you notice any issues with our
+                      workmanship within the first year, we'll return to address them at no additional cost. Your
+                      complete satisfaction is our top priority.
+                    </p>
+                  </details>
+                </div>
+              </div>
+
               <div className="mx-auto grid max-w-5xl gap-6 py-12 lg:grid-cols-2">
                 <div className="flex flex-col gap-6">
                   <div>
@@ -850,7 +1098,7 @@ export default function LandingPage() {
                     </div>
                   </div>
                 </div>
-                <div className="rounded-lg border bg-background p-6 shadow-sm">
+                <div id="quote-form" className="rounded-lg border bg-card p-6 shadow-sm">
                   <h3 className="text-xl font-bold mb-4">Request a Quote</h3>
                   <form action={formAction} className="grid gap-4">
                     {state?.message && (
@@ -860,12 +1108,94 @@ export default function LandingPage() {
                         {state.message}
                       </div>
                     )}
+
+                    {/* Quick Helper Chips */}
+                    <div className="bg-muted/50 rounded-lg p-4 space-y-4 border border-dashed">
+                      <p className="text-sm font-medium text-muted-foreground">
+                        Quick info (optional but helpful for accurate quotes)
+                      </p>
+
+                      {/* Number of Rooms */}
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Number of Rooms</label>
+                        <div className="flex flex-wrap gap-2">
+                          {["1-2 rooms", "3-4 rooms", "5+ rooms", "Whole house"].map((option) => (
+                            <Badge
+                              key={option}
+                              variant={selectedRooms === option ? "default" : "outline"}
+                              className="cursor-pointer hover:bg-primary/90 transition-colors"
+                              onClick={() => setSelectedRooms(option === selectedRooms ? "" : option)}
+                            >
+                              {option}
+                            </Badge>
+                          ))}
+                        </div>
+                        <input type="hidden" name="rooms" value={selectedRooms} />
+                      </div>
+
+                      {/* Square Footage */}
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Approximate Square Footage</label>
+                        <div className="flex flex-wrap gap-2">
+                          {["Under 1,000 sq ft", "1,000-2,000 sq ft", "2,000-3,000 sq ft", "3,000+ sq ft"].map(
+                            (option) => (
+                              <Badge
+                                key={option}
+                                variant={selectedSqFt === option ? "default" : "outline"}
+                                className="cursor-pointer hover:bg-primary/90 transition-colors"
+                                onClick={() => setSelectedSqFt(option === selectedSqFt ? "" : option)}
+                              >
+                                {option}
+                              </Badge>
+                            ),
+                          )}
+                        </div>
+                        <input type="hidden" name="sqft" value={selectedSqFt} />
+                      </div>
+
+                      {/* Timeline */}
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Desired Timeline</label>
+                        <div className="flex flex-wrap gap-2">
+                          {["ASAP", "Within 2 weeks", "Within 1 month", "Flexible"].map((option) => (
+                            <Badge
+                              key={option}
+                              variant={selectedTimeline === option ? "default" : "outline"}
+                              className="cursor-pointer hover:bg-primary/90 transition-colors"
+                              onClick={() => setSelectedTimeline(option === selectedTimeline ? "" : option)}
+                            >
+                              {option}
+                            </Badge>
+                          ))}
+                        </div>
+                        <input type="hidden" name="timeline" value={selectedTimeline} />
+                      </div>
+
+                      {/* Paint Condition */}
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Is old paint peeling or damaged?</label>
+                        <div className="flex flex-wrap gap-2">
+                          {["Yes", "No", "Not sure"].map((option) => (
+                            <Badge
+                              key={option}
+                              variant={paintPeeling === option ? "default" : "outline"}
+                              className="cursor-pointer hover:bg-primary/90 transition-colors"
+                              onClick={() => setPaintPeeling(option === paintPeeling ? "" : option)}
+                            >
+                              {option}
+                            </Badge>
+                          ))}
+                        </div>
+                        <input type="hidden" name="paintPeeling" value={paintPeeling} />
+                      </div>
+                    </div>
+
                     <div className="grid gap-2">
                       <label
                         htmlFor="name"
                         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                       >
-                        Name
+                        Name *
                       </label>
                       <Input id="name" name="name" placeholder="Enter your name" required />
                     </div>
@@ -874,7 +1204,7 @@ export default function LandingPage() {
                         htmlFor="email"
                         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                       >
-                        Email
+                        Email *
                       </label>
                       <Input id="email" name="email" type="email" placeholder="Enter your email" required />
                     </div>
@@ -883,16 +1213,27 @@ export default function LandingPage() {
                         htmlFor="phone"
                         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                       >
-                        Phone
+                        Phone *
                       </label>
                       <Input id="phone" name="phone" placeholder="Enter your phone number" required />
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <input
+                        type="checkbox"
+                        id="okToText"
+                        name="okToText"
+                        className="mt-1 h-4 w-4 rounded border-input text-primary focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                      />
+                      <label htmlFor="okToText" className="text-sm leading-tight cursor-pointer select-none">
+                        OK to text me a scheduling link
+                      </label>
                     </div>
                     <div className="grid gap-2">
                       <label
                         htmlFor="service"
                         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                       >
-                        Service Needed
+                        Service Needed *
                       </label>
                       <select
                         id="service"
@@ -914,7 +1255,7 @@ export default function LandingPage() {
                         htmlFor="message"
                         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                       >
-                        Project Details
+                        Project Details *
                       </label>
                       <Textarea
                         id="message"
@@ -946,6 +1287,9 @@ export default function LandingPage() {
               35 years.
             </p>
             <div className="flex gap-4">
+              <Link href="/areas-we-serve" className="text-sm hover:underline underline-offset-4">
+                Areas We Serve
+              </Link>
               <Link href="#" className="text-sm hover:underline underline-offset-4">
                 Privacy Policy
               </Link>
@@ -955,6 +1299,20 @@ export default function LandingPage() {
             </div>
           </div>
         </footer>
+
+        {/* Sticky mobile CTA button */}
+        {showStickyButton && (
+          <div className="fixed bottom-6 right-6 z-50 md:hidden">
+            <Button
+              size="lg"
+              className="rounded-full shadow-2xl h-14 px-6 animate-fade-in"
+              onClick={() => scrollToSection("quote-form")}
+            >
+              <Phone className="h-5 w-5 mr-2" />
+              <span>Get Quote</span>
+            </Button>
+          </div>
+        )}
       </div>
     </>
   )
