@@ -5,14 +5,12 @@ import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import "./globals.css"
 import { Suspense } from "react"
-import { Inter, Roboto as V0_Font_Roboto } from 'next/font/google'
+import { Roboto } from "next/font/google"
 
-// Initialize fonts
-const _roboto = V0_Font_Roboto({ subsets: ['latin'], weight: ["100","200","300","400","500","600","700","800","900"] })
-
-// Initialize Inter font with CSS variable
-const inter = Inter({
+// Initialize Roboto font with CSS variable
+const roboto = Roboto({
   subsets: ["latin"],
+  weight: ["100", "300", "400", "500", "700", "900"],
   variable: "--font-sans",
   display: "swap",
 })
@@ -89,7 +87,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={roboto.variable}>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
