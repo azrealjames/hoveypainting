@@ -198,7 +198,7 @@ export default function LandingPageClient() {
               ))}
             </nav>
 
-            <Button onClick={() => scrollToSection("quote-form")} className="hidden md:inline-flex my-0 mx-[-10px]">
+            <Button onClick={() => scrollToSection("quote-form")} className="hidden md:inline-flex my-0 mx-[10px]">
               Get a Quote
             </Button>
             <Button
