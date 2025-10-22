@@ -1008,7 +1008,9 @@ export default function LandingPageClient() {
                           onClick={() => copyEmailToClipboard()}
                           aria-label="Copy email address"
                         >
-                          {emailCopied ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4" />}
+                          <div className="sr-only" aria-live="polite">
+                            {emailCopied ? "Email copied to clipboard." : ""}
+                          </div>
                         </Button>
                       </div>
                     </div>
