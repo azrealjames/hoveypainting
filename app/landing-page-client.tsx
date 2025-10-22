@@ -219,6 +219,7 @@ export default function LandingPageClient() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 className="h-6 w-6"
+                aria-hidden="true"
               >
                 <line x1="4" x2="20" y1="12" y2="12" />
                 <line x1="4" x2="20" y1="6" y2="6" />
