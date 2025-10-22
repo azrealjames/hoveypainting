@@ -1,16 +1,17 @@
 import type React from "react"
 import type { Metadata } from "next"
-
+import { Inter } from "next/font/google"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import "./globals.css"
 import { Suspense } from "react"
-import { Inter, Roboto as V0_Font_Roboto } from 'next/font/google'
 
-// Initialize fonts
-const _roboto = V0_Font_Roboto({ subsets: ['latin'], weight: ["100","200","300","400","500","600","700","800","900"] })
-
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
+// Initialize Inter font with CSS variable
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://hoveypainting.com"),
@@ -84,13 +85,13 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={inter.variable}>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta name="theme-color" content="#e11d48" />
       </head>
-      <body className={`${inter.variable} font-sans`}>
+      <body className="font-sans">
         <Suspense fallback={<div>Loading...</div>}>
           {children}
           <Analytics />
