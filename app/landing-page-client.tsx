@@ -198,7 +198,7 @@ export default function LandingPageClient() {
               ))}
             </nav>
 
-            <Button onClick={() => scrollToSection("quote-form")} className="hidden md:inline-flex my-0 mx-[10px]">
+            <Button onClick={() => scrollToSection("quote-form")} className="hidden md:inline-flex my-0 mx-[-10px]">
               Get a Quote
             </Button>
             <Button
@@ -219,7 +219,6 @@ export default function LandingPageClient() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 className="h-6 w-6"
-                aria-hidden="true"
               >
                 <line x1="4" x2="20" y1="12" y2="12" />
                 <line x1="4" x2="20" y1="6" y2="6" />
@@ -1008,9 +1007,7 @@ export default function LandingPageClient() {
                           onClick={() => copyEmailToClipboard()}
                           aria-label="Copy email address"
                         >
-                          <div className="sr-only" aria-live="polite">
-                            {emailCopied ? "Email copied to clipboard." : ""}
-                          </div>
+                          {emailCopied ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4" />}
                         </Button>
                       </div>
                     </div>
