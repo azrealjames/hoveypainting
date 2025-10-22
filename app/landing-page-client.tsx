@@ -177,7 +177,7 @@ export default function LandingPageClient() {
         {/* Header/Navigation */}
         <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <div className="container flex h-16 items-center justify-between">
-            <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity mx-2.5">
               <PaintBucket className="h-6 w-6 text-primary" />
               <span className="text-xl font-bold">Hovey Painting</span>
             </Link>
@@ -198,7 +198,7 @@ export default function LandingPageClient() {
               ))}
             </nav>
 
-            <Button onClick={() => scrollToSection("quote-form")} className="hidden md:inline-flex">
+            <Button onClick={() => scrollToSection("quote-form")} className="hidden md:inline-flex my-0 mx-[-10px]">
               Get a Quote
             </Button>
             <Button
