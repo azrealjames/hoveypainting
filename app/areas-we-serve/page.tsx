@@ -1,7 +1,8 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { PaintBucket, MapPin, Phone, Mail } from "lucide-react"
+import { MapPin, Phone, Mail } from "lucide-react"
+import Image from "next/image"
 
 export const metadata: Metadata = {
   title: "Areas We Serve - Professional Painting Services in Denver Metro",
@@ -142,8 +143,14 @@ export default function AreasWeServePage() {
         <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <div className="container flex h-16 items-center justify-between">
             <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-              <PaintBucket className="h-6 w-6 text-primary" />
-              <span className="text-xl font-bold">Hovey Painting</span>
+              <Image
+                src="/hovey-logo-primary.png"
+                alt="Hovey Painting"
+                width={200}
+                height={60}
+                className="h-12 w-auto"
+                priority
+              />
             </Link>
             <nav className="hidden md:flex gap-6">
               <Link href="/#about" className="text-sm font-medium hover:text-primary">
@@ -337,8 +344,13 @@ export default function AreasWeServePage() {
         <footer className="w-full border-t bg-background py-6">
           <div className="container flex flex-col items-center justify-center gap-4 px-4 md:px-6 md:flex-row md:justify-between">
             <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-              <PaintBucket className="h-6 w-6 text-primary" />
-              <span className="text-lg font-bold">Hovey Painting</span>
+              <Image
+                src="/hovey-logo-primary.png"
+                alt="Hovey Painting"
+                width={200}
+                height={60}
+                className="h-12 w-auto"
+              />
             </Link>
             <p className="text-center text-sm text-muted-foreground md:text-left">
               &copy; {new Date().getFullYear()} Hovey Painting. All rights reserved. Family-owned and operated for over
