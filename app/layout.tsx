@@ -77,6 +77,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://hoveypainting.com",
   },
+  icons: {
+    icon: "/hovey-icon.png",
+    apple: "/hovey-icon.png",
+  },
     generator: 'v0.app'
 }
 
@@ -88,8 +92,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta name="theme-color" content="#e11d48" />
       </head>
       <body className="font-sans">

@@ -122,66 +122,6 @@ export default function LandingPageClient() {
   const [selectedTimeline, setSelectedTimeline] = useState<string>("")
   const [paintPeeling, setPaintPeeling] = useState<string>("")
 
-  useEffect(() => {
-    const updateFavicon = (section: string) => {
-      const faviconMap: Record<string, string> = {
-        about: "/favicon-about.jpg",
-        services: "/favicon-services.jpg",
-        portfolio: "/favicon-portfolio.jpg",
-        testimonials: "/favicon-testimonials.jpg",
-        contact: "/favicon-contact.jpg",
-        "quote-form": "/favicon-quote.jpg",
-      }
-
-      const faviconPath = faviconMap[section] || "/favicon.svg"
-
-      // Update or create favicon link element
-      let link = document.querySelector("link[rel*='icon']") as HTMLLinkElement
-      if (!link) {
-        link = document.createElement("link")
-        link.rel = "icon"
-        document.head.appendChild(link)
-      }
-      link.href = faviconPath
-    }
-
-    // Set up Intersection Observer for sections
-    const observerOptions = {
-      root: null,
-      rootMargin: "-50% 0px -50% 0px", // Trigger when section is in middle of viewport
-      threshold: 0,
-    }
-
-    const observerCallback = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const sectionId = entry.target.id
-          if (sectionId) {
-            updateFavicon(sectionId)
-          }
-        }
-      })
-    }
-
-    const observer = new IntersectionObserver(observerCallback, observerOptions)
-
-    // Observe all main sections
-    const sections = ["about", "services", "portfolio", "testimonials", "contact", "quote-form"]
-    sections.forEach((sectionId) => {
-      const element = document.getElementById(sectionId)
-      if (element) {
-        observer.observe(element)
-      }
-    })
-
-    // Set initial favicon
-    updateFavicon("")
-
-    return () => {
-      observer.disconnect()
-    }
-  }, [])
-
   // Add a scroll function after the state declarations
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId)
