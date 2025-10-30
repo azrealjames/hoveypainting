@@ -4,6 +4,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Phone, Mail, Facebook, CheckCircle, Home, Building2, Paintbrush, Copy, Check } from "lucide-react"
 import { processFormSubmission } from "./actions"
 import { useActionState } from "react"
@@ -112,6 +113,7 @@ export default function LandingPageClient() {
 
   const [state, formAction] = useActionState(processFormSubmission, initialState)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false)
   const [emailCopied, setEmailCopied] = useState(false)
   const [mobileEmailCopied, setMobileEmailCopied] = useState(false)
   const [showStickyButton, setShowStickyButton] = useState(false)
@@ -195,7 +197,7 @@ export default function LandingPageClient() {
               ))}
             </nav>
 
-            <Button onClick={() => scrollToSection("quote-form")} className="hidden md:inline-flex my-0 mx-[10px]">
+            <Button onClick={() => setIsQuoteModalOpen(true)} className="hidden md:inline-flex my-0 mx-[10px]">
               Get a Quote
             </Button>
             <Button
@@ -315,7 +317,13 @@ export default function LandingPageClient() {
 
                 {/* Mobile Menu Footer */}
                 <div className="p-4 border-t">
-                  <Button onClick={() => scrollToSection("quote-form")} className="w-full">
+                  <Button
+                    onClick={() => {
+                      setIsQuoteModalOpen(true)
+                      setIsMobileMenuOpen(false)
+                    }}
+                    className="w-full"
+                  >
                     Get a Quote
                   </Button>
 
@@ -719,7 +727,7 @@ export default function LandingPageClient() {
           </section>
 
           {/* Contact Section */}
-          <section id="contact" className="w-full py-12 md:py-24 lg:py-32 bg-cream">
+          <section id="contact" className="w-full bg-cream">
             <div className="container px-4 md:px-6">
               <div className="flex flex-col items-center justify-center space-y-4 text-center">
                 <div className="space-y-2">
@@ -729,15 +737,18 @@ export default function LandingPageClient() {
                   </p>
                 </div>
               </div>
-              <div className="mx-auto grid max-w-5xl gap-8 py-12 sm:grid-cols-2 md:gap-12">
-                <div className="flex flex-col justify-center space-y-4">
-                  <div className="flex items-center gap-2">
-                    <Phone className="h-4 w-4 text-primary flex-shrink-0" />
-                    <span className="flex-1">(720) 351-0209</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Mail className="h-4 w-4 text-primary flex-shrink-0" />
-                    <span className="flex-1">hoveypainting@yahoo.com</span>
+              <div className="mx-auto max-w-md py-12">
+                <div className="flex flex-col items-center justify-center space-y-6 text-center">
+                  <a
+                    href="tel:7203510209"
+                    className="flex items-center gap-3 hover:text-primary transition-colors text-lg"
+                  >
+                    <Phone className="h-5 w-5 text-primary flex-shrink-0" />
+                    <span>(720) 351-0209</span>
+                  </a>
+                  <div className="flex items-center gap-3 text-lg">
+                    <Mail className="h-5 w-5 text-primary flex-shrink-0" />
+                    <span>hoveypainting@yahoo.com</span>
                     <Button
                       variant="ghost"
                       size="icon"
@@ -748,96 +759,194 @@ export default function LandingPageClient() {
                       {emailCopied ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4" />}
                     </Button>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Facebook className="h-4 w-4 text-primary flex-shrink-0" />
-                    <a
-                      href="https://www.facebook.com/HoveyPainting"
-                      className="flex-1 hover:text-primary transition-colors"
-                    >
-                      Follow us on Facebook
-                    </a>
-                  </div>
-                </div>
-                <div className="flex flex-col justify-center space-y-4">
-                  <form action={formAction}>
-                    <div className="space-y-4">
-                      <Input type="text" name="name" placeholder="Your Name" required />
-                      <Input type="email" name="email" placeholder="Your Email" required />
-                      <Textarea name="message" placeholder="Your Message" required />
-                    </div>
-                    <Button type="submit" className="mt-6">
-                      Send Message
-                    </Button>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Quote Form Section */}
-          <section id="quote-form" className="w-full py-12 md:py-24 lg:py-32 bg-muted">
-            <div className="container px-4 md:px-6">
-              <div className="flex flex-col items-center justify-center space-y-4 text-center">
-                <div className="space-y-2">
-                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Get a Quote</h2>
-                  <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    Fill out the form below to get a free estimate for your painting project.
-                  </p>
-                </div>
-              </div>
-              <div className="mx-auto grid max-w-5xl gap-8 py-12 sm:grid-cols-2 md:gap-12">
-                <div className="flex flex-col justify-center space-y-4">
-                  <div className="flex items-center gap-2">
-                    <Phone className="h-4 w-4 text-primary flex-shrink-0" />
-                    <span className="flex-1">(720) 351-0209</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Mail className="h-4 w-4 text-primary flex-shrink-0" />
-                    <span className="flex-1">hoveypainting@yahoo.com</span>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={() => copyEmailToClipboard()}
-                      aria-label="Copy email address"
-                    >
-                      {emailCopied ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4" />}
-                    </Button>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Facebook className="h-4 w-4 text-primary flex-shrink-0" />
-                    <a
-                      href="https://www.facebook.com/HoveyPainting"
-                      className="flex-1 hover:text-primary transition-colors"
-                    >
-                      Follow us on Facebook
-                    </a>
-                  </div>
-                </div>
-                <div className="flex flex-col justify-center space-y-4">
-                  <form action={formAction}>
-                    <div className="space-y-4">
-                      <Input type="text" name="name" placeholder="Your Name" required />
-                      <Input type="email" name="email" placeholder="Your Email" required />
-                      <Input type="text" name="phone" placeholder="Your Phone Number" required />
-                      <Textarea name="message" placeholder="Your Message" required />
-                    </div>
-                    <Button type="submit" className="mt-6">
-                      Get Quote
-                    </Button>
-                  </form>
+                  <a
+                    href="https://www.facebook.com/HoveyPainting"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 hover:text-primary transition-colors text-lg"
+                  >
+                    <Facebook className="h-5 w-5 text-primary flex-shrink-0" />
+                    <span>Follow us on Facebook</span>
+                  </a>
                 </div>
               </div>
             </div>
           </section>
         </main>
 
-        {/* Sticky Button */}
         {showStickyButton && (
-          <Button onClick={() => scrollToSection("quote-form")} className="fixed bottom-4 right-4 z-50">
+          <Button onClick={() => setIsQuoteModalOpen(true)} className="fixed bottom-4 right-4 z-50 md:hidden">
             Get a Quote
           </Button>
         )}
+
+        <Dialog open={isQuoteModalOpen} onOpenChange={setIsQuoteModalOpen}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-2xl">Request a Quote</DialogTitle>
+              <DialogDescription>
+                Fill out the form below and we'll get back to you within 24 hours with a free estimate.
+              </DialogDescription>
+            </DialogHeader>
+
+            <form action={formAction} className="space-y-6 mt-4">
+              {/* Quick Info Helper Chips */}
+              <div className="space-y-4 p-6 rounded-lg border bg-card">
+                <h3 className="font-semibold text-lg">Quick Info (Optional)</h3>
+                <p className="text-sm text-muted-foreground">
+                  Help us prepare a more accurate estimate by selecting options below:
+                </p>
+
+                {/* Number of Rooms */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Number of Rooms</label>
+                  <div className="flex flex-wrap gap-2">
+                    {["1-2", "3-4", "5-6", "7+"].map((option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => setSelectedRooms(option)}
+                        className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                          selectedRooms === option
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                        }`}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                  <input type="hidden" name="rooms" value={selectedRooms} />
+                </div>
+
+                {/* Square Footage */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Square Footage</label>
+                  <div className="flex flex-wrap gap-2">
+                    {["< 1000", "1000-2000", "2000-3000", "3000+"].map((option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => setSelectedSqFt(option)}
+                        className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                          selectedSqFt === option
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                        }`}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                  <input type="hidden" name="sqft" value={selectedSqFt} />
+                </div>
+
+                {/* Timeline */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Timeline</label>
+                  <div className="flex flex-wrap gap-2">
+                    {["ASAP", "1-2 weeks", "1 month", "Flexible"].map((option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => setSelectedTimeline(option)}
+                        className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                          selectedTimeline === option
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                        }`}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                  <input type="hidden" name="timeline" value={selectedTimeline} />
+                </div>
+
+                {/* Paint Peeling/Damaged */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Paint Peeling or Damaged?</label>
+                  <div className="flex flex-wrap gap-2">
+                    {["Yes", "No", "Not sure"].map((option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => setPaintPeeling(option)}
+                        className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                          paintPeeling === option
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                        }`}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                  <input type="hidden" name="paintPeeling" value={paintPeeling} />
+                </div>
+              </div>
+
+              {/* Contact Information */}
+              <div className="space-y-4">
+                <Input type="text" name="name" placeholder="Your Name *" required />
+                <Input type="email" name="email" placeholder="Your Email *" required />
+                <Input type="tel" name="phone" placeholder="Your Phone Number *" required />
+
+                {/* OK to Text Checkbox */}
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="okToText"
+                    name="okToText"
+                    className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                  />
+                  <label
+                    htmlFor="okToText"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    OK to text me a scheduling link
+                  </label>
+                </div>
+
+                {/* Service Type */}
+                <select
+                  name="service"
+                  required
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <option value="">Select Service Type *</option>
+                  <option value="Residential Interior">Residential Interior</option>
+                  <option value="Residential Exterior">Residential Exterior</option>
+                  <option value="Commercial">Commercial</option>
+                  <option value="Cabinet Refinishing">Cabinet Refinishing</option>
+                  <option value="Deck & Fence Staining">Deck & Fence Staining</option>
+                  <option value="Other">Other</option>
+                </select>
+
+                <Textarea name="message" placeholder="Tell us about your project *" required rows={6} />
+              </div>
+
+              {/* Submit Button and Status Message */}
+              <div className="space-y-4">
+                <Button type="submit" className="w-full" size="lg">
+                  Request Free Quote
+                </Button>
+
+                {state?.message && (
+                  <div
+                    className={`p-4 rounded-lg ${
+                      state.success
+                        ? "bg-green-50 text-green-800 border border-green-200"
+                        : "bg-red-50 text-red-800 border border-red-200"
+                    }`}
+                  >
+                    {state.message}
+                  </div>
+                )}
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
     </>
   )
