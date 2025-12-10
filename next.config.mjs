@@ -1,8 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -16,18 +13,10 @@ const nextConfig = {
     unoptimized: true,
   },
   // Ensure nodemailer works in serverless environment
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-        net: false,
-        tls: false,
-        dns: false,
-      }
-    }
-    return config
+  experimental: {
+    serverComponentsExternalPackages: ['nodemailer'],
   },
+  turbopack: {},
 }
 
 export default nextConfig
