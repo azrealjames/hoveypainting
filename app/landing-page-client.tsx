@@ -583,28 +583,19 @@ export default function LandingPageClient() {
                 <h3 className="text-2xl font-bold">Residential Exterior</h3>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
                   <Image
-                    src="/exterior-house-painting.png"
+                    src="/exterior-house-before.jpg"
                     width={400}
                     height={300}
-                    alt="Exterior painting project"
+                    alt="Residential exterior painting - blue-grey house with white garage door"
                     className="aspect-video rounded-lg object-cover"
                     loading="lazy"
                     sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
                   />
                   <Image
-                    src="/exterior-home-painting.jpg"
+                    src="/exterior-shed-after.jpg"
                     width={400}
                     height={300}
-                    alt="Exterior painting project"
-                    className="aspect-video rounded-lg object-cover"
-                    loading="lazy"
-                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
-                  />
-                  <Image
-                    src="/exterior-trim-painting.jpg"
-                    width={400}
-                    height={300}
-                    alt="Exterior painting project"
+                    alt="Residential exterior painting - grey shed with white trim and door"
                     className="aspect-video rounded-lg object-cover"
                     loading="lazy"
                     sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
@@ -612,7 +603,7 @@ export default function LandingPageClient() {
                 </div>
               </div>
 
-              <div className="mt-8 space-y-8">
+              {/* <div className="mt-8 space-y-8">
                 <h3 className="text-2xl font-bold">Commercial Projects</h3>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
                   <Image
@@ -634,7 +625,7 @@ export default function LandingPageClient() {
                     sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
                   />
                 </div>
-              </div>
+              </div> */}
 
               <div className="mt-8 space-y-8">
                 <h3 className="text-2xl font-bold">Restoration Projects</h3>
