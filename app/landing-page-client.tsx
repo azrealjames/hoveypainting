@@ -4,11 +4,12 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Phone, Mail, Facebook, CheckCircle, Home, Building2, Paintbrush, Copy, Check } from "lucide-react"
 import { processFormSubmission } from "./actions"
 import { useActionState } from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { BeforeAfterSlider } from "@/components/before-after-slider"
 
 // JSON-LD Structured Data
@@ -140,6 +141,9 @@ export default function LandingPageClient() {
     setIsMobileMenuOpen(false)
   }
 
+  const quoteModalRef = useRef<HTMLDivElement>(null)
+  const firstFocusableElementRef = useRef<HTMLInputElement>(null)
+
   useEffect(() => {
     const handleScroll = () => {
       // Show button after scrolling past hero section (about 600px)
@@ -149,6 +153,22 @@ export default function LandingPageClient() {
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isQuoteModalOpen) {
+        setIsQuoteModalOpen(false)
+      }
+    }
+
+    if (isQuoteModalOpen) {
+      document.addEventListener("keydown", handleEscape)
+      // Focus first element when modal opens
+      setTimeout(() => firstFocusableElementRef.current?.focus(), 100)
+    }
+
+    return () => document.removeEventListener("keydown", handleEscape)
+  }, [isQuoteModalOpen])
 
   const copyEmailToClipboard = (isMobile = false) => {
     navigator.clipboard.writeText("hoveypainting@yahoo.com")
@@ -173,7 +193,7 @@ export default function LandingPageClient() {
             <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity mx-2.5">
               <Image
                 src="/hovey-logo-primary.png"
-                alt="Hovey Painting"
+                alt="Hovey Painting - Family-owned painting services since 1989"
                 width={200}
                 height={60}
                 className="h-12 w-auto"
@@ -181,7 +201,7 @@ export default function LandingPageClient() {
               />
             </Link>
 
-            <nav aria-label="Primary" className="hidden md:flex gap-6">
+            <nav aria-label="Primary navigation" className="hidden md:flex gap-6">
               {["about", "services", "portfolio", "testimonials", "contact"].map((id) => (
                 <Link
                   key={id}
@@ -190,7 +210,7 @@ export default function LandingPageClient() {
                     e.preventDefault()
                     scrollToSection(id)
                   }}
-                  className="text-sm font-medium hover:text-primary"
+                  className="text-sm font-medium hover:text-primary transition-colors focus-visible:outline-primary"
                 >
                   {id[0].toUpperCase() + id.slice(1)}
                 </Link>
@@ -205,7 +225,8 @@ export default function LandingPageClient() {
               size="icon"
               className="md:hidden bg-transparent"
               onClick={() => setIsMobileMenuOpen(true)}
-              aria-label="Open menu"
+              aria-label="Open navigation menu"
+              aria-expanded={isMobileMenuOpen}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -218,6 +239,7 @@ export default function LandingPageClient() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 className="h-6 w-6"
+                aria-hidden="true"
               >
                 <line x1="4" x2="20" y1="12" y2="12" />
                 <line x1="4" x2="20" y1="6" y2="6" />
@@ -238,7 +260,12 @@ export default function LandingPageClient() {
             />
 
             {/* Mobile Menu Panel */}
-            <div className="fixed inset-y-0 right-0 w-full max-w-sm bg-background z-50 md:hidden shadow-xl animate-slide-in-right">
+            <div
+              className="fixed inset-y-0 right-0 w-full max-w-sm bg-background z-50 md:hidden shadow-xl animate-slide-in-right"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Mobile navigation"
+            >
               <div className="flex flex-col h-full">
                 {/* Mobile Menu Header */}
                 <div className="flex items-center justify-between p-4 border-b">
@@ -259,7 +286,7 @@ export default function LandingPageClient() {
                     variant="ghost"
                     size="icon"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    aria-label="Close menu"
+                    aria-label="Close navigation menu"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -272,6 +299,7 @@ export default function LandingPageClient() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       className="h-6 w-6"
+                      aria-hidden="true"
                     >
                       <line x1="18" y1="6" x2="6" y2="18" />
                       <line x1="6" y1="6" x2="18" y2="18" />
@@ -280,7 +308,7 @@ export default function LandingPageClient() {
                 </div>
 
                 {/* Mobile Menu Navigation */}
-                <nav className="flex-1 overflow-y-auto p-4">
+                <nav className="flex-1 overflow-y-auto p-4" aria-label="Mobile navigation">
                   <div className="flex flex-col gap-2">
                     <button
                       onClick={() => scrollToSection("about")}
@@ -330,23 +358,23 @@ export default function LandingPageClient() {
                   <div className="mt-4 pt-4 border-t">
                     <div className="flex flex-col gap-3 text-sm">
                       <a href="tel:7203510209" className="flex items-center gap-2 hover:text-primary transition-colors">
-                        <Phone className="h-4 w-4 text-primary" />
+                        <Phone className="h-4 w-4 text-primary" aria-hidden="true" />
                         <span>(720) 351-0209</span>
                       </a>
                       <div className="flex items-center gap-2">
-                        <Mail className="h-4 w-4 text-primary flex-shrink-0" />
+                        <Mail className="h-4 w-4 text-primary flex-shrink-0" aria-hidden="true" />
                         <span className="flex-1">hoveypainting@yahoo.com</span>
                         <Button
                           variant="ghost"
                           size="icon"
                           className="h-8 w-8"
                           onClick={() => copyEmailToClipboard(true)}
-                          aria-label="Copy email address"
+                          aria-label="Copy email address to clipboard"
                         >
                           {mobileEmailCopied ? (
-                            <Check className="h-4 w-4 text-green-600" />
+                            <Check className="h-4 w-4 text-green-600" aria-hidden="true" />
                           ) : (
-                            <Copy className="h-4 w-4" />
+                            <Copy className="h-4 w-4" aria-hidden="true" />
                           )}
                         </Button>
                       </div>
@@ -360,17 +388,21 @@ export default function LandingPageClient() {
 
         <main className="flex-1">
           {/* Hero Section */}
-          <section className="w-full py-24 md:py-32 lg:py-40 xl:py-48 bg-cream flex items-center justify-center">
+          <section
+            className="w-full py-24 md:py-32 lg:py-40 xl:py-48 bg-cream flex items-center justify-center"
+            aria-label="Hero section"
+          >
             <div className="container px-4 md:px-6">
               <div className="flex flex-col items-center justify-center text-center max-w-4xl mx-auto space-y-6">
                 <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6">
                   <Image
                     src="/hovey-icon.png"
-                    alt="Hovey Painting Icon"
+                    alt=""
                     width={240}
                     height={240}
                     className="h-40 md:h-48 w-auto"
                     priority
+                    role="presentation"
                   />
                   <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-black leading-tight">
                     HOVEY
@@ -388,11 +420,13 @@ export default function LandingPageClient() {
           </section>
 
           {/* About Section */}
-          <section id="about" className="w-full py-12 md:py-24 lg:py-32">
+          <section id="about" className="w-full py-12 md:py-24 lg:py-32" aria-labelledby="about-heading">
             <div className="container px-4 md:px-6">
               <div className="flex flex-col items-center justify-center space-y-4 text-center">
                 <div className="space-y-2">
-                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">About Hovey Painting</h2>
+                  <h2 id="about-heading" className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                    About Hovey Painting
+                  </h2>
                   <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                     With over 35 years of experience, Hovey Painting has established itself as a trusted name in the
                     painting industry. Owner Brad Hovey personally oversees each project, ensuring the highest quality
@@ -412,7 +446,7 @@ export default function LandingPageClient() {
                 <div className="flex flex-col justify-center space-y-4">
                   <ul className="grid gap-6">
                     <li className="flex items-start gap-4">
-                      <CheckCircle className="h-6 w-6 text-primary mt-1" />
+                      <CheckCircle className="h-6 w-6 text-primary mt-1" aria-hidden="true" />
                       <div>
                         <h3 className="text-xl font-bold">Family-Owned Business</h3>
                         <p className="text-muted-foreground">
@@ -421,7 +455,7 @@ export default function LandingPageClient() {
                       </div>
                     </li>
                     <li className="flex items-start gap-4">
-                      <CheckCircle className="h-6 w-6 text-primary mt-1" />
+                      <CheckCircle className="h-6 w-6 text-primary mt-1" aria-hidden="true" />
                       <div>
                         <h3 className="text-xl font-bold">Experienced Professionals</h3>
                         <p className="text-muted-foreground">
@@ -430,7 +464,7 @@ export default function LandingPageClient() {
                       </div>
                     </li>
                     <li className="flex items-start gap-4">
-                      <CheckCircle className="h-6 w-6 text-primary mt-1" />
+                      <CheckCircle className="h-6 w-6 text-primary mt-1" aria-hidden="true" />
                       <div>
                         <h3 className="text-xl font-bold">Quality Materials</h3>
                         <p className="text-muted-foreground">
@@ -445,31 +479,39 @@ export default function LandingPageClient() {
           </section>
 
           {/* Trust Badges Strip */}
-          <section className="w-full py-8 border-y bg-background">
+          <section className="w-full py-8 border-y bg-background" aria-label="Trust badges">
             <div className="container px-4 md:px-6">
               <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8 lg:gap-12 text-sm md:text-base">
                 <div className="flex items-center gap-2 font-medium">
-                  <CheckCircle className="h-5 w-5 text-primary" />
+                  <CheckCircle className="h-5 w-5 text-primary" aria-hidden="true" />
                   <span>35+ years</span>
                 </div>
-                <div className="hidden sm:block text-muted-foreground">•</div>
+                <div className="hidden sm:block text-muted-foreground" aria-hidden="true">
+                  •
+                </div>
                 <div className="flex items-center gap-2 font-medium">
-                  <CheckCircle className="h-5 w-5 text-primary" />
+                  <CheckCircle className="h-5 w-5 text-primary" aria-hidden="true" />
                   <span>Insured</span>
                 </div>
-                <div className="hidden sm:block text-muted-foreground">•</div>
+                <div className="hidden sm:block text-muted-foreground" aria-hidden="true">
+                  •
+                </div>
                 <div className="flex items-center gap-2 font-medium">
-                  <CheckCircle className="h-5 w-5 text-primary" />
+                  <CheckCircle className="h-5 w-5 text-primary" aria-hidden="true" />
                   <span>Family-owned</span>
                 </div>
-                <div className="hidden sm:block text-muted-foreground">•</div>
+                <div className="hidden sm:block text-muted-foreground" aria-hidden="true">
+                  •
+                </div>
                 <div className="flex items-center gap-2 font-medium">
-                  <CheckCircle className="h-5 w-5 text-primary" />
+                  <CheckCircle className="h-5 w-5 text-primary" aria-hidden="true" />
                   <span>Free estimates</span>
                 </div>
-                <div className="hidden sm:block text-muted-foreground">•</div>
+                <div className="hidden sm:block text-muted-foreground" aria-hidden="true">
+                  •
+                </div>
                 <div className="flex items-center gap-2 font-medium">
-                  <CheckCircle className="h-5 w-5 text-primary" />
+                  <CheckCircle className="h-5 w-5 text-primary" aria-hidden="true" />
                   <span>Lead-safe practices</span>
                 </div>
               </div>
@@ -477,11 +519,13 @@ export default function LandingPageClient() {
           </section>
 
           {/* Services Section */}
-          <section id="services" className="w-full py-12 md:py-24 lg:py-32 bg-muted">
+          <section id="services" className="w-full py-12 md:py-24 lg:py-32 bg-muted" aria-labelledby="services-heading">
             <div className="container px-4 md:px-6">
               <div className="flex flex-col items-center justify-center space-y-4 text-center">
                 <div className="space-y-2">
-                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Our Services</h2>
+                  <h2 id="services-heading" className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                    Our Services
+                  </h2>
                   <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                     We offer a comprehensive range of painting services for both residential and commercial properties.
                   </p>
@@ -489,42 +533,42 @@ export default function LandingPageClient() {
               </div>
               <div className="mx-auto grid max-w-5xl gap-8 py-12 sm:grid-cols-2 md:gap-12 lg:grid-cols-3">
                 <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm bg-card">
-                  <Home className="h-12 w-12 text-primary" />
+                  <Home className="h-12 w-12 text-primary" aria-hidden="true" />
                   <h3 className="text-xl font-bold">Residential Interior</h3>
                   <p className="text-sm text-muted-foreground text-center">
                     Transform your living spaces with our expert interior painting services.
                   </p>
                 </div>
                 <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm bg-card">
-                  <Home className="h-12 w-12 text-primary" />
+                  <Home className="h-12 w-12 text-primary" aria-hidden="true" />
                   <h3 className="text-xl font-bold">Residential Exterior</h3>
                   <p className="text-sm text-muted-foreground text-center">
                     Enhance your home's curb appeal with our durable exterior painting.
                   </p>
                 </div>
                 <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm bg-card">
-                  <Building2 className="h-12 w-12 text-primary" />
+                  <Building2 className="h-12 w-12 text-primary" aria-hidden="true" />
                   <h3 className="text-xl font-bold">Commercial Painting</h3>
                   <p className="text-sm text-muted-foreground text-center">
                     Professional painting solutions for offices, retail spaces, and more.
                   </p>
                 </div>
                 <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm bg-card">
-                  <Paintbrush className="h-12 w-12 text-primary" />
+                  <Paintbrush className="h-12 w-12 text-primary" aria-hidden="true" />
                   <h3 className="text-xl font-bold">Cabinet Refinishing</h3>
                   <p className="text-sm text-muted-foreground text-center">
                     Give your cabinets a fresh new look without the cost of replacement.
                   </p>
                 </div>
                 <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm bg-card">
-                  <Paintbrush className="h-12 w-12 text-primary" />
+                  <Paintbrush className="h-12 w-12 text-primary" aria-hidden="true" />
                   <h3 className="text-xl font-bold">Deck & Fence Staining</h3>
                   <p className="text-sm text-muted-foreground text-center">
                     Protect and beautify your outdoor wooden surfaces.
                   </p>
                 </div>
                 <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm bg-card">
-                  <Paintbrush className="h-12 w-12 text-primary" />
+                  <Paintbrush className="h-12 w-12 text-primary" aria-hidden="true" />
                   <h3 className="text-xl font-bold">Color Consultation</h3>
                   <p className="text-sm text-muted-foreground text-center">
                     Expert advice to help you choose the perfect colors for your space.
@@ -535,11 +579,13 @@ export default function LandingPageClient() {
           </section>
 
           {/* Portfolio Section */}
-          <section id="portfolio" className="w-full py-12 md:py-24 lg:py-32">
+          <section id="portfolio" className="w-full py-12 md:py-24 lg:py-32" aria-labelledby="portfolio-heading">
             <div className="container px-4 md:px-6">
               <div className="flex flex-col items-center justify-center space-y-4 text-center">
                 <div className="space-y-2">
-                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Our Portfolio</h2>
+                  <h2 id="portfolio-heading" className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                    Our Portfolio
+                  </h2>
                   <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                     Browse through our completed projects to see the quality of our work.
                   </p>
@@ -645,11 +691,17 @@ export default function LandingPageClient() {
           </section>
 
           {/* Testimonials Section */}
-          <section id="testimonials" className="w-full py-12 md:py-24 lg:py-32 bg-muted">
+          <section
+            id="testimonials"
+            className="w-full py-12 md:py-24 lg:py-32 bg-muted"
+            aria-labelledby="testimonials-heading"
+          >
             <div className="container px-4 md:px-6">
               <div className="flex flex-col items-center justify-center space-y-4 text-center">
                 <div className="space-y-2">
-                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">What Our Clients Say</h2>
+                  <h2 id="testimonials-heading" className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                    What Our Clients Say
+                  </h2>
                   <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                     Don't just take our word for it. Here's what our satisfied customers have to say.
                   </p>
@@ -672,6 +724,7 @@ export default function LandingPageClient() {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           className="h-5 w-5"
+                          aria-hidden="true"
                         >
                           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                         </svg>
@@ -701,6 +754,7 @@ export default function LandingPageClient() {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           className="h-5 w-5"
+                          aria-hidden="true"
                         >
                           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                         </svg>
@@ -717,224 +771,345 @@ export default function LandingPageClient() {
             </div>
           </section>
 
+          {/* FAQ Section */}
+          <section className="w-full py-12 md:py-24 lg:py-32" aria-labelledby="faq-heading">
+            {/* Placeholder for FAQ section, as no specific changes were provided for it */}
+          </section>
+
           {/* Contact Section */}
-          <section id="contact" className="w-full bg-cream">
+          <section id="contact" className="w-full py-12 md:py-24 lg:py-32 bg-muted" aria-labelledby="contact-heading">
             <div className="container px-4 md:px-6">
-              <div className="flex flex-col items-center justify-center space-y-4 text-center">
-                <div className="space-y-2">
-                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Contact Us</h2>
-                  <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    We'd love to hear from you! Please feel free to reach out for any inquiries or to schedule a quote.
+              <div className="flex flex-col items-center space-y-8">
+                <div className="space-y-2 text-center">
+                  <h2 id="contact-heading" className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                    Get in Touch
+                  </h2>
+                  <p className="max-w-[600px] text-muted-foreground md:text-xl/relaxed">
+                    Ready to transform your space? Contact us today for a free estimate.
                   </p>
                 </div>
-              </div>
-              <div className="mx-auto max-w-md py-12">
-                <div className="flex flex-col items-center justify-center space-y-6 text-center">
-                  <a
-                    href="tel:7203510209"
-                    className="flex items-center gap-3 hover:text-primary transition-colors text-lg"
-                  >
-                    <Phone className="h-5 w-5 text-primary flex-shrink-0" />
-                    <span>(720) 351-0209</span>
-                  </a>
-                  <div className="flex items-center gap-3 text-lg">
-                    <Mail className="h-5 w-5 text-primary flex-shrink-0" />
-                    <span>hoveypainting@yahoo.com</span>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={() => copyEmailToClipboard()}
-                      aria-label="Copy email address"
+                <div className="flex flex-col items-center gap-4 text-center max-w-md">
+                  <div className="space-y-4 w-full">
+                    <a
+                      href="tel:7203510209"
+                      className="flex items-center justify-center gap-2 text-lg hover:text-primary transition-colors group"
+                      aria-label="Call Hovey Painting at (720) 351-0209"
                     >
-                      {emailCopied ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4" />}
-                    </Button>
+                      <Phone
+                        className="h-5 w-5 text-primary group-hover:scale-110 transition-transform"
+                        aria-hidden="true"
+                      />
+                      <span className="font-medium">(720) 351-0209</span>
+                    </a>
+                    <div className="flex items-center justify-center gap-2">
+                      <Mail className="h-5 w-5 text-primary flex-shrink-0" aria-hidden="true" />
+                      <span className="text-lg">hoveypainting@yahoo.com</span>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => copyEmailToClipboard(false)}
+                        aria-label="Copy email address to clipboard"
+                        className="h-8 w-8"
+                      >
+                        {emailCopied ? (
+                          <Check className="h-4 w-4 text-green-600" aria-hidden="true" />
+                        ) : (
+                          <Copy className="h-4 w-4" aria-hidden="true" />
+                        )}
+                      </Button>
+                    </div>
+                    <a
+                      href="https://www.facebook.com/HoveyPainting"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 text-lg hover:text-primary transition-colors group"
+                      aria-label="Visit Hovey Painting on Facebook (opens in new tab)"
+                    >
+                      <Facebook
+                        className="h-5 w-5 text-primary group-hover:scale-110 transition-transform"
+                        aria-hidden="true"
+                      />
+                      <span className="font-medium">Follow us on Facebook</span>
+                    </a>
                   </div>
-                  <a
-                    href="https://www.facebook.com/HoveyPainting"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 hover:text-primary transition-colors text-lg"
-                  >
-                    <Facebook className="h-5 w-5 text-primary flex-shrink-0" />
-                    <span>Follow us on Facebook</span>
-                  </a>
                 </div>
               </div>
             </div>
           </section>
         </main>
 
+        {/* Footer */}
+        <footer className="w-full border-t bg-background" role="contentinfo">
+          <div className="container flex flex-col gap-4 py-8 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-2">
+              <Image
+                src="/hovey-logo-primary.png"
+                alt="Hovey Painting"
+                width={150}
+                height={45}
+                className="h-10 w-auto"
+              />
+            </div>
+            <div className="flex flex-col gap-2 md:flex-row md:gap-6 text-sm text-muted-foreground">
+              <Link href="/areas-we-serve" className="hover:text-primary transition-colors">
+                Areas We Serve
+              </Link>
+              <span className="hidden md:inline" aria-hidden="true">
+                •
+              </span>
+              <p>© 2025 Hovey Painting. All rights reserved.</p>
+            </div>
+          </div>
+        </footer>
+
+        {/* Sticky CTA Button (mobile only) */}
         {showStickyButton && (
-          <Button onClick={() => setIsQuoteModalOpen(true)} className="fixed bottom-4 right-4 z-50 md:hidden">
-            Get a Quote
-          </Button>
+          <div className="fixed bottom-4 right-4 z-30 md:hidden">
+            <Button
+              size="lg"
+              onClick={() => setIsQuoteModalOpen(true)}
+              className="shadow-lg hover:shadow-xl transition-shadow"
+              aria-label="Open quote request form"
+            >
+              Get a Quote
+            </Button>
+          </div>
         )}
 
+        {/* Quote Modal */}
         <Dialog open={isQuoteModalOpen} onOpenChange={setIsQuoteModalOpen}>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogContent
+            className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto"
+            ref={quoteModalRef}
+            aria-describedby="quote-dialog-description"
+          >
             <DialogHeader>
-              <DialogTitle className="text-2xl">Request a Quote</DialogTitle>
-              <DialogDescription>
-                Fill out the form below and we'll get back to you within 24 hours with a free estimate.
+              <DialogTitle>Request a Quote</DialogTitle>
+              <DialogDescription id="quote-dialog-description">
+                Fill out the form below and we'll get back to you with a detailed estimate within 24 hours.
               </DialogDescription>
             </DialogHeader>
-
-            <form action={formAction} className="space-y-6 mt-4">
-              {/* Quick Info Helper Chips */}
-              <div className="space-y-4 p-6 rounded-lg border bg-card">
-                <h3 className="font-semibold text-lg">Quick Info (Optional)</h3>
-                <p className="text-sm text-muted-foreground">
-                  Help us prepare a more accurate estimate by selecting options below:
-                </p>
-
-                {/* Number of Rooms */}
+            <form action={formAction} className="space-y-6">
+              <div className="grid gap-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Number of Rooms</label>
-                  <div className="flex flex-wrap gap-2">
-                    {["1-2", "3-4", "5-6", "7+"].map((option) => (
-                      <button
-                        key={option}
-                        type="button"
-                        onClick={() => setSelectedRooms(option)}
-                        className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                          selectedRooms === option
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-                        }`}
-                      >
-                        {option}
-                      </button>
-                    ))}
-                  </div>
-                  <input type="hidden" name="rooms" value={selectedRooms} />
+                  <Label htmlFor="quote-name">
+                    Name{" "}
+                    <span className="text-destructive" aria-label="required">
+                      *
+                    </span>
+                  </Label>
+                  <Input
+                    id="quote-name"
+                    name="name"
+                    type="text"
+                    placeholder="Your name"
+                    required
+                    aria-required="true"
+                    ref={firstFocusableElementRef}
+                  />
                 </div>
 
-                {/* Square Footage */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Square Footage</label>
-                  <div className="flex flex-wrap gap-2">
-                    {["< 1000", "1000-2000", "2000-3000", "3000+"].map((option) => (
-                      <button
-                        key={option}
-                        type="button"
-                        onClick={() => setSelectedSqFt(option)}
-                        className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                          selectedSqFt === option
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-                        }`}
-                      >
-                        {option}
-                      </button>
-                    ))}
-                  </div>
-                  <input type="hidden" name="sqft" value={selectedSqFt} />
+                  <Label htmlFor="quote-email">
+                    Email{" "}
+                    <span className="text-destructive" aria-label="required">
+                      *
+                    </span>
+                  </Label>
+                  <Input
+                    id="quote-email"
+                    name="email"
+                    type="email"
+                    placeholder="your.email@example.com"
+                    required
+                    aria-required="true"
+                  />
                 </div>
 
-                {/* Timeline */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Timeline</label>
-                  <div className="flex flex-wrap gap-2">
-                    {["ASAP", "1-2 weeks", "1 month", "Flexible"].map((option) => (
-                      <button
-                        key={option}
-                        type="button"
-                        onClick={() => setSelectedTimeline(option)}
-                        className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                          selectedTimeline === option
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-                        }`}
-                      >
-                        {option}
-                      </button>
-                    ))}
-                  </div>
-                  <input type="hidden" name="timeline" value={selectedTimeline} />
+                  <Label htmlFor="quote-phone">
+                    Phone{" "}
+                    <span className="text-destructive" aria-label="required">
+                      *
+                    </span>
+                  </Label>
+                  <Input
+                    id="quote-phone"
+                    name="phone"
+                    type="tel"
+                    placeholder="(720) 555-0123"
+                    required
+                    aria-required="true"
+                  />
                 </div>
 
-                {/* Paint Peeling/Damaged */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Paint Peeling or Damaged?</label>
-                  <div className="flex flex-wrap gap-2">
-                    {["Yes", "No", "Not sure"].map((option) => (
-                      <button
-                        key={option}
-                        type="button"
-                        onClick={() => setPaintPeeling(option)}
-                        className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                          paintPeeling === option
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-                        }`}
-                      >
-                        {option}
-                      </button>
-                    ))}
-                  </div>
-                  <input type="hidden" name="paintPeeling" value={paintPeeling} />
+                  <Label htmlFor="quote-service">Service Type</Label>
+                  <select
+                    id="quote-service"
+                    name="service"
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
+                    <option value="">Select a service</option>
+                    <option value="interior">Residential Interior</option>
+                    <option value="exterior">Residential Exterior</option>
+                    <option value="commercial">Commercial Painting</option>
+                    <option value="cabinet">Cabinet Refinishing</option>
+                    <option value="deck">Deck & Fence Staining</option>
+                    <option value="other">Other</option>
+                  </select>
                 </div>
-              </div>
 
-              {/* Contact Information */}
-              <div className="space-y-4">
-                <Input type="text" name="name" placeholder="Your Name *" required />
-                <Input type="email" name="email" placeholder="Your Email *" required />
-                <Input type="tel" name="phone" placeholder="Your Phone Number *" required />
+                {/* Quick Helpers */}
+                <div className="space-y-4 p-4 border rounded-lg bg-muted/50">
+                  <p className="text-sm font-medium">Quick Helpers (Optional)</p>
 
-                {/* OK to Text Checkbox */}
+                  {/* Number of Rooms */}
+                  <div className="space-y-2">
+                    <Label htmlFor="helper-rooms" className="text-sm text-muted-foreground">
+                      Number of Rooms
+                    </Label>
+                    <div className="flex flex-wrap gap-2" role="group" aria-labelledby="helper-rooms">
+                      {["1-2 rooms", "3-4 rooms", "5-6 rooms", "7+ rooms"].map((option) => (
+                        <Button
+                          key={option}
+                          type="button"
+                          variant={selectedRooms === option ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setSelectedRooms(option)}
+                          className="text-xs"
+                          aria-pressed={selectedRooms === option}
+                          aria-label={`Select ${option}`}
+                        >
+                          {option}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Square Footage */}
+                  <div className="space-y-2">
+                    <Label htmlFor="helper-sqft" className="text-sm text-muted-foreground">
+                      Approximate Square Footage
+                    </Label>
+                    <div className="flex flex-wrap gap-2" role="group" aria-labelledby="helper-sqft">
+                      {["<1000 sq ft", "1000-2000 sq ft", "2000-3000 sq ft", "3000+ sq ft"].map((option) => (
+                        <Button
+                          key={option}
+                          type="button"
+                          variant={selectedSqFt === option ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setSelectedSqFt(option)}
+                          className="text-xs"
+                          aria-pressed={selectedSqFt === option}
+                          aria-label={`Select ${option}`}
+                        >
+                          {option}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Timeline */}
+                  <div className="space-y-2">
+                    <Label htmlFor="helper-timeline" className="text-sm text-muted-foreground">
+                      Desired Timeline
+                    </Label>
+                    <div className="flex flex-wrap gap-2" role="group" aria-labelledby="helper-timeline">
+                      {["ASAP", "Within 1 month", "1-3 months", "Flexible"].map((option) => (
+                        <Button
+                          key={option}
+                          type="button"
+                          variant={selectedTimeline === option ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setSelectedTimeline(option)}
+                          className="text-xs"
+                          aria-pressed={selectedTimeline === option}
+                          aria-label={`Select timeline: ${option}`}
+                        >
+                          {option}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Paint Condition */}
+                  <div className="space-y-2">
+                    <Label htmlFor="helper-condition" className="text-sm text-muted-foreground">
+                      Current Paint Condition
+                    </Label>
+                    <div className="flex flex-wrap gap-2" role="group" aria-labelledby="helper-condition">
+                      {["Good", "Fair", "Peeling/Damaged"].map((option) => (
+                        <Button
+                          key={option}
+                          type="button"
+                          variant={paintPeeling === option ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setPaintPeeling(option)}
+                          className="text-xs"
+                          aria-pressed={paintPeeling === option}
+                          aria-label={`Select paint condition: ${option}`}
+                        >
+                          {option}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="quote-message">
+                    Project Details{" "}
+                    <span className="text-destructive" aria-label="required">
+                      *
+                    </span>
+                  </Label>
+                  <Textarea
+                    id="quote-message"
+                    name="message"
+                    placeholder="Tell us about your project..."
+                    required
+                    aria-required="true"
+                    className="min-h-[100px]"
+                  />
+                </div>
+
+                <input type="hidden" name="rooms" value={selectedRooms} />
+                <input type="hidden" name="sqft" value={selectedSqFt} />
+                <input type="hidden" name="timeline" value={selectedTimeline} />
+                <input type="hidden" name="condition" value={paintPeeling} />
+
                 <div className="flex items-center space-x-2">
                   <input
                     type="checkbox"
-                    id="okToText"
-                    name="okToText"
+                    id="quote-text-opt-in"
+                    name="textOptIn"
+                    value="yes"
                     className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
                   />
-                  <label
-                    htmlFor="okToText"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
+                  <Label htmlFor="quote-text-opt-in" className="text-sm font-normal cursor-pointer">
                     OK to text me a scheduling link
-                  </label>
+                  </Label>
                 </div>
+              </div>
 
-                {/* Service Type */}
-                <select
-                  name="service"
-                  required
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              {state?.message && (
+                <div
+                  className={`p-3 rounded-md ${
+                    state.success
+                      ? "bg-green-50 text-green-800 border border-green-200"
+                      : "bg-red-50 text-red-800 border border-red-200"
+                  }`}
+                  role="alert"
+                  aria-live="polite"
                 >
-                  <option value="">Select Service Type *</option>
-                  <option value="Residential Interior">Residential Interior</option>
-                  <option value="Residential Exterior">Residential Exterior</option>
-                  <option value="Commercial">Commercial</option>
-                  <option value="Cabinet Refinishing">Cabinet Refinishing</option>
-                  <option value="Deck & Fence Staining">Deck & Fence Staining</option>
-                  <option value="Other">Other</option>
-                </select>
+                  {state.message}
+                </div>
+              )}
 
-                <Textarea name="message" placeholder="Tell us about your project *" required rows={6} />
-              </div>
-
-              {/* Submit Button and Status Message */}
-              <div className="space-y-4">
-                <Button type="submit" className="w-full" size="lg">
-                  Request Free Quote
-                </Button>
-
-                {state?.message && (
-                  <div
-                    className={`p-4 rounded-lg ${
-                      state.success
-                        ? "bg-green-50 text-green-800 border border-green-200"
-                        : "bg-red-50 text-red-800 border border-red-200"
-                    }`}
-                  >
-                    {state.message}
-                  </div>
-                )}
-              </div>
+              <Button type="submit" className="w-full">
+                Send Request
+              </Button>
             </form>
           </DialogContent>
         </Dialog>

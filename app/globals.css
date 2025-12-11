@@ -133,6 +133,16 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Add visible focus indicators for keyboard navigation */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary;
+  }
+
+  a:focus-visible,
+  button:focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary;
+  }
 }
 
 @keyframes accordion-down {
