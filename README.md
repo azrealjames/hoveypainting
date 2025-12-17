@@ -35,36 +35,36 @@ Before you begin, ensure you have the following installed:
 ## 🛠️ Installation
 
 1. Clone the repository:
-\`\`\`bash
+```bash
 git clone https://github.com/yourusername/hoveypainting.git
 cd hoveypainting
-\`\`\`
+```
 
 2. Install dependencies:
-\`\`\`bash
+```bash
 npm install
 # or
 pnpm install
 # or
 yarn install
-\`\`\`
+```
 
 3. Create a \`.env.local\` file in the root directory and add your email server credentials:
-\`\`\`env
+```env
 EMAIL_SERVER_HOST=your-smtp-host
 EMAIL_SERVER_PORT=587
 EMAIL_SERVER_USER=your-email@example.com
 EMAIL_SERVER_PASSWORD=your-email-password
-\`\`\`
+```
 
 4. Run the development server:
-\`\`\`bash
+```bash
 npm run dev
 # or
 pnpm dev
 # or
 yarn dev
-\`\`\`
+```
 
 5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
 
@@ -77,12 +77,12 @@ The contact form uses Nodemailer to send emails. You'll need to configure your S
 1. Enable 2-Factor Authentication in your Google account
 2. Generate an App Password at [Google Account Security](https://myaccount.google.com/security)
 3. Use these settings in your \`.env.local\`:
-\`\`\`env
+```env
 EMAIL_SERVER_HOST=smtp.gmail.com
 EMAIL_SERVER_PORT=587
 EMAIL_SERVER_USER=your-gmail@gmail.com
 EMAIL_SERVER_PASSWORD=your-app-password
-\`\`\`
+```
 
 ### Using Other SMTP Providers
 
@@ -90,7 +90,7 @@ You can use any SMTP provider (SendGrid, Mailgun, AWS SES, etc.). Just update th
 
 ## 🎯 Project Structure
 
-\`\`\`
+```
 hoveypainting/
 ├── app/
 │   ├── actions.ts          # Server actions for form submission
@@ -108,7 +108,7 @@ hoveypainting/
 ├── tailwind.config.ts      # Tailwind CSS configuration
 ├── postcss.config.js       # PostCSS configuration
 └── package.json
-\`\`\`
+```
 
 ## 🎨 Customization
 
