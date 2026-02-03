@@ -82,16 +82,6 @@
 }
 
 @theme inline {
-  /* Container configuration for centering */
-  --container-center: true;
-  --container-padding: 1rem;
-  --container-padding-md: 2rem;
-  --container-max-width-sm: 640px;
-  --container-max-width-md: 768px;
-  --container-max-width-lg: 1024px;
-  --container-max-width-xl: 1280px;
-  --container-max-width-2xl: 1400px;
-  
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -143,23 +133,6 @@
   body {
     @apply bg-background text-foreground;
   }
-  
-  /* Container centering */
-  .container {
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    width: 100%;
-    max-width: 1400px;
-  }
-  
-  @media (min-width: 768px) {
-    .container {
-      padding-left: 2rem;
-      padding-right: 2rem;
-    }
-  }
 
   /* Add visible focus indicators for keyboard navigation */
   *:focus-visible {
@@ -169,6 +142,45 @@
   a:focus-visible,
   button:focus-visible {
     @apply outline-2 outline-offset-2 outline-primary;
+  }
+}
+
+/* Container centering - placed outside @layer for higher specificity */
+.container {
+  width: 100% !important;
+  max-width: 1400px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+  box-sizing: border-box !important;
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding-left: 4rem !important;
+    padding-right: 4rem !important;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    padding-left: 5rem !important;
+    padding-right: 5rem !important;
   }
 }
 
